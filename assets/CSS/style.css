@@ -13,12 +13,25 @@ body {
     margin-bottom: 20px;
 }
 
-/* Grid Container */
 .grid-container {
     display: grid;
-    gap: 10px;
+    gap: 10px; /* Adjust as needed */
     justify-content: center;
-    margin-top: 20px;
+    align-items: center;
+    margin: 100px auto 0; /* Ensure there's space for the navbar and center the grid */
+    padding: 20px;
+    box-sizing: border-box;
+    width: max-content;  /* Ensure the container only takes up the space it needs */
+}
+
+.grid-4x4 {
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+}
+
+.grid-6x6 {
+    grid-template-columns: repeat(6, 100px);
+    grid-template-rows: repeat(6, 100px);
 }
 
 /* Grid Layout */
