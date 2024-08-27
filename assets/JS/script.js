@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let remainingPairs = normalCards.length / 2;
     let gamesWon = 0; // Track games won
 
+    let timerInterval;  // Interval ID for the timer
+    let timerSeconds = 0;  // Track elapsed time in seconds
+    let bestTimeNormal = localStorage.getItem('bestTimeNormal') || null;  // Retrieve best time for Normal mode from localStorage
+    let bestTimeHard = localStorage.getItem('bestTimeHard') || null;  // Retrieve best time for Hard mode from localStorage
+
+    // Display the best times on load
+    updateBestTimeDisplay();
+
     /**
      * Shuffle the elements of an array in place.
      * @param {Array} array - The array to shuffle.
@@ -43,6 +51,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         updateRemainingPairs();
+    }
+
+    /**
+     * Start the timer when the game starts.
+     */
+    function startTimer() {
+        timerSeconds = 0;
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    /**
+     * Update the timer display with the elapsed time.
+     */
+    function updateTimer() {
+        timerSeconds++;
+        document.getElementById('timer').textContent = formatTime(timerSeconds);
+    }
+
+    /**
+     * Format time in seconds to a mm:ss format.
+     * @param {number} seconds - The number of seconds elapsed.
+     * @returns {string} - The formatted time string.
+     */
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
 
     /**
@@ -144,32 +180,61 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * End the game, increment games won, and reset the game.
+     * End the game, check for best time, increment games won, and reset the game.
      */
     function endGame() {
+        clearInterval(timerInterval);  // Stop the timer
+
         setTimeout(() => {
             alert("Congratulations, you've won!");
             gamesWon++;
             updateGamesWon();
+
+            const bestTimeKey = 'bestTimeNormal';
+            const currentBestTime = bestTimeNormal;
+
+            if (!currentBestTime || timerSeconds < currentBestTime) {
+                bestTimeNormal = timerSeconds;
+                localStorage.setItem(bestTimeKey, bestTimeNormal);
+                alert('New best time!');
+            }
+
+            updateBestTimeDisplay();
             resetGame();
         }, 500);
+    }
+
+    /**
+     * Update the display of the best time for the current mode.
+     */
+    function updateBestTimeDisplay() {
+        const bestTimeDisplay = document.getElementById('best-time-display');
+        bestTimeDisplay.textContent = bestTimeNormal ? formatTime(bestTimeNormal) : '--:--';
     }
 
     /**
      * Reset the game by reinitializing the variables and regenerating the grid.
      */
     function resetGame() {
+        // Reset game state variables
         firstCard = null;
         secondCard = null;
         lockBoard = false;
         correctPairs = 0;
         remainingPairs = normalCards.length / 2;
 
+        // Clear the game board
         const gameBoard = document.getElementById('game-board');
         gameBoard.innerHTML = ''; // Clear the board
 
-        createGrid(); // Create a new grid
+        // Re-create the grid
+        createGrid();
+
+        // Start the timer for the new game
+        startTimer();
     }
 
-    createGrid(); // Start the game by creating the grid
+    // Start the game initially in Normal mode
+    createGrid();
+    startTimer();
 });
