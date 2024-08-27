@@ -1,0 +1,48 @@
+/* Basic Reset and Font */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Title Styling */
+#title {
+    margin-bottom: 20px;
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Grid Layout */
+.grid-4x4 {
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+}
+
+/* Card Styles */
+.card {
+    width: 100px;
+    height: 100px;
+    background-color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    border: 3px solid #444;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.card.face-up {
+    background-color: white;
+    color: black;
+}
