@@ -12,25 +12,34 @@
 </head>
 
 <body>
-  <h1 id="title">Flippin 'Eck!</h1>
-
-  <div id="mode-toggle">
-    <button id="normal-mode" class="active">Normal</button>
-    <button id="hard-mode">Hard</button>
-  </div>
-  
-  <div id="trackers">
-    <p>Games Won: <span id="games-won">0</span></p>
-    <p>Correct Pairs: <span id="correct-pairs">0</span></p>
-    <p>Pairs Remaining: <span id="pairs-remaining">8</span></p>
-    <p>Time: <span id="timer">00:00</span></p>
-    <p>Best Time: <span id="best-time-display">--:--</span></p>
-</div>
-
-  <div id="game-board" class="grid-container">
-    <!-- Cards will be generated here by JavaScript -->
-  </div>
-  <script src="assets/JS/script.js"></script>
+    <div id="game-container">
+        <h1 id="title">Flippin 'Eck!</h1>
+        <button id="how-to-play-btn" class="info-btn">How to Play</button>
+    
+        <div id="how-to-play-pane">
+          <p>Flip over two cards. If they match, they stay flipped. If not, they flip back. Find all matching pairs to win!</p>
+        </div>
+    
+        <div id="trackers">
+          <p id="games-won">Games Won: <span id="games-won-count">0</span></p>
+          <p>Correct Pairs: <span id="correct-pairs">0</span></p>
+          <p>Pairs Remaining: <span id="pairs-remaining">0</span></p>
+          <p>Time: <span id="timer">00:00</span></p>
+          <p id="best-time">Best Time: <span id="best-time-display">--:--</span></p>
+        </div>
+    
+        <div id="mode-toggle">
+          <button id="normal-mode" class="active">Normal</button>
+          <button id="hard-mode">Hard</button>
+        </div>
+    
+        <div id="game-board" class="grid-container">
+          <!-- Cards will be generated here by JavaScript -->
+        </div>
+      </div>
+    
+      <script src="assets/JS/script.js"></script>
+    </body>
 </body>
 
 </html>

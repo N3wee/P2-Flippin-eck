@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Card data for Normal mode (4x4) and Hard mode (6x6)
     const normalCards = [
         { number: 1 }, { number: 2 }, { number: 3 }, { number: 4 },
         { number: 5 }, { number: 6 }, { number: 7 }, { number: 8 },
@@ -18,20 +19,19 @@ document.addEventListener('DOMContentLoaded', function () {
         { number: 15 }, { number: 16 }, { number: 17 }, { number: 18 }
     ];
 
-    let mode = 'normal'; // Default mode is normal
+    let mode = 'normal'; // Start with normal mode
     let firstCard = null;
     let secondCard = null;
     let lockBoard = false;
     let correctPairs = 0;
-    let remainingPairs = normalCards.length / 2;
-    let gamesWon = 0;
-
-    let timerInterval;  // Interval ID for the timer
-    let timerSeconds = 0;  // Track elapsed time in seconds
+    let remainingPairs = 0;
+    let hardWins = 0;
+    let normalWins = 0;
+    let timerInterval;
+    let timerSeconds = 0;
     let bestTimeNormal = localStorage.getItem('bestTimeNormal') || null;
     let bestTimeHard = localStorage.getItem('bestTimeHard') || null;
 
-    // Display the best times on load
     updateBestTimeDisplay();
 
     function shuffle(array) {
@@ -41,18 +41,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function createGrid() {
+    function startGame() {
+        firstCard = null;
+        secondCard = null;
+        lockBoard = false;
+        correctPairs = 0;
+        remainingPairs = mode === 'normal' ? 8 : 18;
+        updateScore();
+        updateRemainingPairs();
+
+        clearInterval(timerInterval);
+        timerSeconds = 0;
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+
         const gameBoard = document.getElementById('game-board');
-        const cards = mode === 'normal' ? normalCards : hardCards;
-
+        const cards = mode === 'normal' ? [...normalCards] : [...hardCards];
         shuffle(cards);
-        gameBoard.innerHTML = ''; // Clear previous grid
 
-        if (mode === 'normal') {
-            gameBoard.className = 'grid-container grid-4x4';
-        } else {
-            gameBoard.className = 'grid-container grid-6x6';
-        }
+        gameBoard.innerHTML = '';
+
+        gameBoard.className = mode === 'normal' ? 'grid-container grid-4x4' : 'grid-container grid-6x6';
 
         cards.forEach((card, index) => {
             const cardElement = document.createElement('div');
@@ -62,16 +71,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cardElement.addEventListener('click', flipCard);
             gameBoard.appendChild(cardElement);
         });
-
-        remainingPairs = cards.length / 2;
-        updateRemainingPairs();
-    }
-
-    function startTimer() {
-        timerSeconds = 0;
-        updateTimer();
-        clearInterval(timerInterval); // Clear any existing timer
-        timerInterval = setInterval(updateTimer, 1000);
     }
 
     function updateTimer() {
@@ -86,18 +85,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function flipCard() {
-        if (lockBoard) return; // Prevent clicking if the board is locked
-        if (this === firstCard) return; // Prevent double-clicking on the same card
+        if (lockBoard) return;
+        if (this === firstCard) return;
 
-        this.classList.add('face-up');
         this.textContent = this.dataset.number;
+        this.classList.add('face-up');
 
         if (!firstCard) {
             firstCard = this;
         } else {
             secondCard = this;
-            lockBoard = true; // Lock the board until cards are checked
-
+            lockBoard = true;
             checkForMatch();
         }
     }
@@ -113,22 +111,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function disableCards() {
-        setTimeout(() => {
-            firstCard.classList.add('invisible');
-            secondCard.classList.add('invisible');
+        firstCard.classList.add('invisible');
+        secondCard.classList.add('invisible');
 
-            correctPairs++;
-            remainingPairs--;
+        correctPairs++;
+        remainingPairs--;
+        updateScore();
+        updateRemainingPairs();
 
-            updateScore();
-            updateRemainingPairs();
-
+        if (remainingPairs === 0) {
+            endGame();
+        } else {
             resetBoard();
-
-            if (remainingPairs === 0) {
-                endGame();
-            }
-        }, 500);
+        }
     }
 
     function unflipCards() {
@@ -154,29 +149,30 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('pairs-remaining').textContent = remainingPairs;
     }
 
-    function updateGamesWon() {
-        document.getElementById('games-won').textContent = gamesWon;
-    }
-
     function endGame() {
-        clearInterval(timerInterval);  // Stop the timer
+        clearInterval(timerInterval);
 
         setTimeout(() => {
-            alert("Congratulations, you've won!");
-            gamesWon++;
-            updateGamesWon();
+            if (remainingPairs === 0) {
+                alert("Congratulations, you've won!");
+                const bestTimeKey = mode === 'normal' ? 'bestTimeNormal' : 'bestTimeHard';
+                let bestTime = mode === 'normal' ? bestTimeNormal : bestTimeHard;
 
-            const bestTimeKey = mode === 'normal' ? 'bestTimeNormal' : 'bestTimeHard';
-            let bestTime = mode === 'normal' ? bestTimeNormal : bestTimeHard;
+                if (mode === 'normal') {
+                    normalWins++;
+                    document.getElementById('games-won-count').textContent = normalWins;
+                } else {
+                    hardWins++;
+                    document.getElementById('games-won-count').textContent = hardWins;
+                }
 
-            if (!bestTime || timerSeconds < bestTime) {
-                bestTime = timerSeconds;
-                localStorage.setItem(bestTimeKey, bestTime);
-                alert('New best time!');
+                if (!bestTime || timerSeconds < bestTime) {
+                    bestTime = timerSeconds;
+                    localStorage.setItem(bestTimeKey, bestTime);
+                    document.getElementById('best-time-display').textContent = formatTime(bestTime);
+                    alert('New best time!');
+                }
             }
-
-            updateBestTimeDisplay();
-            resetGame();
         }, 500);
     }
 
@@ -189,22 +185,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function resetGame() {
-        firstCard = null;
-        secondCard = null;
-        lockBoard = false;
-        correctPairs = 0;
-
-        createGrid();
-        startTimer();
-    }
-
     document.getElementById('normal-mode').addEventListener('click', function () {
         mode = 'normal';
         document.getElementById('normal-mode').classList.add('active');
         document.getElementById('hard-mode').classList.remove('active');
         updateBestTimeDisplay();
-        resetGame();
+        startGame();
     });
 
     document.getElementById('hard-mode').addEventListener('click', function () {
@@ -212,10 +198,15 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('normal-mode').classList.remove('active');
         document.getElementById('hard-mode').classList.add('active');
         updateBestTimeDisplay();
-        resetGame();
+        startGame();
     });
 
-    // Initialize the game in Normal mode when the page loads
-    createGrid();
-    startTimer();
+    document.getElementById('how-to-play-btn').addEventListener('click', function () {
+        const howToPlayPane = document.getElementById('how-to-play-pane');
+        howToPlayPane.style.display = howToPlayPane.style.display === 'block' ? 'none' : 'block';
+    });
+
+    startGame();
 });
+
+
