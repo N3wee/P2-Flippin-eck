@@ -5,6 +5,8 @@ Welcome to **Flippin 'Eck!**, a memory card matching game that challenges player
 
 The game is responsive, ensuring an enjoyable experience across different devices, including desktops, tablets, and mobile phones.
 
+![Responsive Test](./assets/images/responsive-test-flippin.png)
+
 ## Features
 
 ### Game Modes
@@ -29,16 +31,16 @@ The game is responsive, ensuring an enjoyable experience across different device
 ### Shuffle Function
 The `shuffle` function randomly shuffles an array of cards. This function is based on the widely-used Fisher-Yates (Knuth) Shuffle algorithm.
 
-### Game Initialization
+## Game Initialization
 The `startGame` function initializes the game, setting up the grid based on the selected difficulty mode, shuffling the cards, and resetting the game stats.
 
-### Card Matching Logic
+## Card Matching Logic
 The game employs a simple card matching logic where two cards are flipped and checked for a match. If they match, they remain visible; if not, they are flipped back.
 
-### Timer Functionality
+## Timer Functionality
 The `updateTimer` function keeps track of the time elapsed during the game and displays it in `mm:ss` format.
 
-### Best Time Tracking
+## Best Time Tracking
 The best time for each difficulty mode is stored in the browser's `localStorage`. When a new best time is achieved, it is saved and displayed.
 
 ## Testing
@@ -51,6 +53,17 @@ The game's layout and functionality were tested on various screen sizes to ensur
 
 ### Game Logic Testing
 The game logic, including the card matching, timer, and best time tracking, was rigorously tested to ensure accuracy and a smooth user experience.
+
+### Lighthouse Testing
+Lighthouse tests were conducted for both desktop and mobile versions of the site.
+
+#### Desktop Results
+The results for desktop showed excellent performance across all metrics.
+![Desktop Lighthouse Test](./assets/images/destop-lighthouse-test.png)
+
+#### Mobile Results
+The mobile test results indicated good performance overall, with some areas for future improvement in terms of performance.
+![Mobile Lighthouse Test](./assets/images/mobile-lighthouse-test-flippin.png)
 
 ## Deployment
 The game was deployed using GitHub Pages. The steps for deployment are as follows:
