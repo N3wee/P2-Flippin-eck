@@ -154,7 +154,11 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     function checkForMatch() {
         const isMatch = firstCard.dataset.number === secondCard.dataset.number;
-        isMatch ? disableCards() : unflipCards();
+        if (isMatch) {
+            disableCards();
+        } else {
+            unflipCards();
+        }
     }
 
     /**
@@ -169,7 +173,11 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScore();
         updateRemainingPairs();
 
-        remainingPairs === 0 ? endGame() : resetBoard();
+        if(remainingPairs === 0) {
+            endGame();
+        } else {
+            resetBoard();
+        }
     }
 
     /**
@@ -243,9 +251,19 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     function updateBestTimeDisplay() {
         const bestTimeDisplay = document.getElementById("best-time-display");
-        bestTimeDisplay.textContent = mode === "normal"
-            ? bestTimeNormal ? formatTime(bestTimeNormal) : "--:--"
-            : bestTimeHard ? formatTime(bestTimeHard) : "--:--";
+    
+        let bestTime;
+        if (mode === "normal") {
+            bestTime = bestTimeNormal;
+        } else {
+            bestTime = bestTimeHard;
+        }
+    
+        if (bestTime) {
+            bestTimeDisplay.textContent = formatTime(bestTime);
+        } else {
+            bestTimeDisplay.textContent = "--:--";
+        }
     }
 
     /**
