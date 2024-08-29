@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             if (remainingPairs === 0) {
-                alert("Congratulations, you've won!");
+                Swal.fire("Congratulations, you've won!");
                 const bestTimeKey = mode === "normal" ? "bestTimeNormal" : "bestTimeHard";
                 let bestTime = mode === "normal" ? bestTimeNormal : bestTimeHard;
 
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     bestTime = timerSeconds;
                     localStorage.setItem(bestTimeKey, bestTime);
                     document.getElementById("best-time-display").textContent = formatTime(bestTime);
-                    alert("New best time!");
+                    Swal.fire("New best time!");
                 }
             }
         }, 500);
